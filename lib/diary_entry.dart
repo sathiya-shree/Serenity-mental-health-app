@@ -29,7 +29,7 @@ class _DiaryEntryScreenState extends State<DiaryEntryScreen> {
   }
 
   void _initAI() {
-    const apiKey = 'AIzaSyDHrK9DQXOzMDxx6rj91wKeLhVAPdse7ZE';
+    const apiKey = 'GEMINI_API_KEY';
     _aiModel = GenerativeModel(
       model: 'gemini-3.1-flash-lite-preview',
       apiKey: apiKey,
