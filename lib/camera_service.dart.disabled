@@ -1,0 +1,95 @@
+import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+
+class CameraService with ChangeNotifier {
+  CameraController? _controller;
+  List<CameraDescription>? _cameras;
+  int _selectedCameraIndex = 0;
+
+  final FaceDetector _faceDetector = FaceDetector(
+    options: FaceDetectorOptions(
+      enableClassification: true,
+      performanceMode: FaceDetectorMode.fast,
+    ),
+  );
+
+  bool _isProcessing = false;
+  String _emotion = "Detecting…";
+
+  CameraService() {
+    _initializeCamera();
+  }
+
+  CameraController? get controller => _controller;
+  String get emotion => _emotion;
+
+  Future<void> _initializeCamera() async {
+    _cameras = await availableCameras();
+    _initCameraController(_cameras![_selectedCameraIndex]);
+  }
+
+  void _initCameraController(CameraDescription cameraDescription) async {
+    _controller = CameraController(
+      cameraDescription,
+      ResolutionPreset.medium,
+      enableAudio: false,
+    );
+
+    await _controller!.initialize();
+
+    _controller!.startImageStream(_processCameraImage);
+
+    notifyListeners();
+  }
+
+  Future<void> _processCameraImage(CameraImage image) async {
+    if (_isProcessing) return;
+    _isProcessing = true;
+
+    final inputImage = InputImage.fromBytes(
+      bytes: image.planes[0].bytes,
+      metadata: InputImageMetadata(
+        size: Size(image.width.toDouble(), image.height.toDouble()),
+        rotation: InputImageRotation.rotation0deg,
+        format: InputImageFormat.nv21,
+        bytesPerRow: image.planes[0].bytesPerRow,
+      ),
+    );
+
+    final faces = await _faceDetector.processImage(inputImage);
+
+    if (faces.isNotEmpty) {
+      final face = faces.first;
+
+      final smile = face.smilingProbability ?? 0;
+      final leftEye = face.leftEyeOpenProbability ?? 1;
+      final rightEye = face.rightEyeOpenProbability ?? 1;
+
+      if (smile > 0.6) {
+        _emotion = "Happy 😊";
+      } else if (leftEye < 0.3 && rightEye < 0.3) {
+        _emotion = "Sad 😢";
+      } else {
+        _emotion = "Neutral 😐";
+      }
+
+      notifyListeners();
+    }
+
+    _isProcessing = false;
+  }
+
+  void switchCamera() {
+    _selectedCameraIndex =
+        (_selectedCameraIndex + 1) % _cameras!.length;
+    _initCameraController(_cameras![_selectedCameraIndex]);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _faceDetector.close();
+    super.dispose();
+  }
+}

@@ -1,0 +1,205 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'profile.dart';
+import '../utils/test_result_manager.dart';
+
+class BurnoutTestScreen extends StatefulWidget {
+  const BurnoutTestScreen({super.key});
+
+  @override
+  _BurnoutTestScreenState createState() => _BurnoutTestScreenState();
+}
+
+class _BurnoutTestScreenState extends State<BurnoutTestScreen> {
+  final List<Map<String, dynamic>> questions = [
+    {
+      'question':
+          'Do you feel emotionally exhausted or drained by your daily responsibilities?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you feel tired even after getting what should be enough rest?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you feel detached or indifferent toward work, studies, or daily tasks?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you feel a lack of motivation or enthusiasm for things you once cared about?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you feel overwhelmed by your workload or responsibilities?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you find it hard to concentrate or stay focused?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you feel irritable, frustrated, or impatient more often than usual?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you feel like your efforts are not appreciated or effective?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you avoid tasks because they feel mentally exhausting?',
+      'options': _options,
+    },
+    {
+      'question':
+          'Do you feel physically unwell (headaches, tension, fatigue) due to stress?',
+      'options': _options,
+    },
+  ];
+
+  static const List<Map<String, dynamic>> _options = [
+    {'option': 'Never', 'points': 0},
+    {'option': 'Sometimes', 'points': 1},
+    {'option': 'Often', 'points': 2},
+    {'option': 'Everyday', 'points': 3},
+  ];
+
+  Map<int, int> selectedOptions = {};
+  bool testTaken = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfTaken();
+  }
+
+  void _checkIfTaken() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final doc = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user.uid)
+        .get();
+
+    if (doc.exists && doc.data()!['BurnoutTestScore'] != null) {
+      setState(() => testTaken = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Burnout Test'),
+        centerTitle: true,
+        backgroundColor: Colors.orange,
+      ),
+      body: testTaken
+          ? const Center(
+              child: Text(
+                'You have already taken the Burnout test.',
+                style: TextStyle(fontSize: 18),
+              ),
+            )
+          : _buildQuestions(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orange,
+        onPressed: _submitTest,
+        child: const Icon(Icons.done),
+      ),
+    );
+  }
+
+  Widget _buildQuestions() {
+    return ListView.builder(
+      itemCount: questions.length,
+      itemBuilder: (context, index) {
+        return Card(
+          margin: const EdgeInsets.all(8),
+          elevation: 4,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Question ${index + 1}: ${questions[index]['question']}',
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange),
+                ),
+                const SizedBox(height: 10),
+                ...List.generate(4, (i) {
+                  return RadioListTile<int>(
+                    title: Text(_options[i]['option']),
+                    value: _options[i]['points'],
+                    groupValue: selectedOptions[index],
+                    onChanged: (v) =>
+                        setState(() => selectedOptions[index] = v!),
+                  );
+                }),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _submitTest() async {
+    int score = selectedOptions.values.fold(0, (a, b) => a + b);
+
+    String diagnosis = score <= 5
+        ? 'No Burnout'
+        : score <= 10
+            ? 'Mild Burnout'
+            : score <= 18
+                ? 'Moderate Burnout'
+                : 'Severe Burnout';
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await FirebaseFirestore.instance.collection('Users').doc(user.uid).set({
+      'BurnoutTestScore': score,
+      'BurnoutDiagnosis': diagnosis,
+      'BurnoutTimestamp': Timestamp.now(),
+    }, SetOptions(merge: true));
+
+    _showResult(score, diagnosis, 'Burnout Test');
+  }
+
+  void _showResult(int score, String diagnosis, String testName) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Test Result'),
+        content: Text('Score: $score\nDiagnosis: $diagnosis'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ProfilePage(),
+                ),
+              );
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+}
