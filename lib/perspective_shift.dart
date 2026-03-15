@@ -26,7 +26,7 @@ class _PerspectiveShiftScreenState extends State<PerspectiveShiftScreen>
   String? _selectedDistortion;
 
   // IMPORTANT: Move this to a secure environment variable later!
-  static const String _apiKey = 'AIzaSyB4lJlYPOVmQABrVncVGwZgA2tsdS3hvFk';
+  static const String _apiKey = 'GEMINI_API_KEY';
   late GenerativeModel _model;
 
   final Map<String, Map<String, String>> _distortionData = {
