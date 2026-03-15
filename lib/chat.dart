@@ -71,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _initDawn() async {
     // Note: Always secure your API keys in production!
-    const apiKey = 'AIzaSyB4lJlYPOVmQABrVncVGwZgA2tsdS3hvFk';
+    const apiKey = 'GEMINI_API_KEY';
     try {
       _model = GenerativeModel(
         model: 'gemini-2.5-flash', // Corrected version
