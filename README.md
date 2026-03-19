@@ -28,7 +28,7 @@ Example placeholder:
 
 | Dashboard                               |
 | --------------------------------------- |
-| ![Dashboard](screenshots/dashboard.png) |
+| ![Dashboard](screenshots/dashboard.jpg) |
 
 | AI Chatbot                          |
 | ----------------------------------- |
@@ -47,7 +47,7 @@ Example placeholder:
 
 | Habit Tracker                   |
 | ------------------------------- |
-| ![Habit](screenshots/habit.png) |
+| ![Habit](screenshots/habit.jpeg) |
 ---
 
 # Features
