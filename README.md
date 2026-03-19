@@ -21,18 +21,33 @@ Example placeholder:
 
 ## App Screenshots
 
-| Login                           | Dashboard                               |
-| ------------------------------- | --------------------------------------- |
-| ![Login](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) |
+| Login                           |  
+| ------------------------------- |
+| ![Login](screenshots/login.png) |
 
-| AI Chatbot                          | Journal Analysis                    |
-| ----------------------------------- | ----------------------------------- |
-| ![Chatbot](screenshots/chatbot.png) | ![Journal](screenshots/journal.png) |
 
-| Perspective Shift                                 | Habit Tracker                   |
-| ------------------------------------------------- | ------------------------------- |
-| ![Perspective](screenshots/perspective_shift.png) | ![Habit](screenshots/habit.png) |
+| Dashboard                               |
+| --------------------------------------- |
+| ![Dashboard](screenshots/dashboard.png) |
 
+| AI Chatbot                          |
+| ----------------------------------- |
+| ![Chatbot](screenshots/chatbot.png) |
+
+
+| Journal Analysis                    |
+| ----------------------------------- |
+| ![Journal](screenshots/journal.png) |
+
+
+| Perspective Shift                                 | 
+| ------------------------------------------------- | 
+| ![Perspective](screenshots/perspective_shift.png) | 
+
+
+| Habit Tracker                   |
+| ------------------------------- |
+| ![Habit](screenshots/habit.png) |
 ---
 
 # Features
