@@ -32,7 +32,7 @@ Example placeholder:
 
 | AI Chatbot                          |
 | ----------------------------------- |
-| ![Chatbot](screenshots/chatbot.png) |
+| ![Chatbot](screenshots/chatbot.jpeg) |
 
 
 | Journal Analysis                    |
