@@ -19,23 +19,6 @@ Example placeholder:
 
 ---
 
-# Screenshots
-
-Create a folder named **screenshots** in your repo and place images.
-
-Example structure:
-
-```
-screenshots/
-    login.png
-    dashboard.png
-    chatbot.png
-    journal.png
-    perspective_shift.png
-```
-
-README section:
-
 ## App Screenshots
 
 | Login                           | Dashboard                               |
