@@ -37,7 +37,7 @@ Example placeholder:
 
 | Journal Analysis                    |
 | ----------------------------------- |
-| ![Journal](screenshots/journal.png) |
+| ![Journal](screenshots/journal.jpeg) |
 
 
 | Perspective Shift                                 | 
